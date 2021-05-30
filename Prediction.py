@@ -123,11 +123,10 @@ def app():
                         print(day_api)
                         result = firebase.post(db_field, json)
                         print(json["date"])
-                        logger.info("%s: Data from %s succesfully added to firebase!" %selected_country %obj.data)
+                        logger.info("%s: Dataset from %s succesfully added to firebase!" %selected_country %obj.data)
                     else:
-                        logger.warning("%s: Data from %s has not been added because is negative or 0!" %selected_country %obj.data)
-                else:
-                    logger.warning("%s: Database is updated! There are no new elements to be added!" %selected_country)
+                        logger.warning("%s: Dataset from %s has not been added because is negative or 0!" %selected_country %obj.data)
+
             break
 
     db_name = "/covid-19-535b8-default-rtdb/"
