@@ -16,7 +16,7 @@ def app():
     #defining logging file, covid-19.log, in which program writes warnings, info message, errors etc
     logger = logging.getLogger('Prediction')
     logger.setLevel(logging.DEBUG)
-    fh = logging.FileHandler('covid-19.log')
+    fh = logging.FileHandler('covid-19.log', 'w+')
     fh.setLevel(logging.INFO)
     logger.addHandler(fh)
 
@@ -35,7 +35,7 @@ def app():
     st.sidebar.title("Forecasting parameters")
 
     #printing a Covid-19 image in forecasting page
-    image = Image.open('D:\Python_implements\Proiect_IPDP\covid-cells.jpg')
+    image = Image.open('"D:\Python_implements\Covid-19-App\covid_image.jpg"')
     st.image(image)
 
     #List of countries we select for prediction or statistics data
@@ -73,8 +73,8 @@ def app():
                 day_db += elem
             else:
                 break
+        logger.info("INFO : %s - Last dataset in Prediction DB is from %s - %s - %s", selected_country, str(year_db), str(month_db), str(day_db))
         break
-
     for country in countries_list:
         if country == selected_country:
             #take data(active cases and date) from selected country API
@@ -123,9 +123,9 @@ def app():
                         print(day_api)
                         result = firebase.post(db_field, json)
                         print(json["date"])
-                        logger.info("%s: Dataset from %s succesfully added to firebase!" %selected_country %obj.data)
+                        logger.info("INFO : %s - %s : Dataset has been added succesfully!", selected_country, obj.data)
                     else:
-                        logger.warning("%s: Dataset from %s has not been added because is negative or 0!" %selected_country %obj.data)
+                        logger.warning("WARNING : %s - %s : Dataset has not been added because number of cases is negative or 0!", selected_country, obj.data)
 
             break
 
@@ -227,3 +227,5 @@ def app():
     st.write('forecast components')
     fig2 = m.plot_components(forecast)
     st.write(fig2)
+
+    logger.removeHandler(fh)

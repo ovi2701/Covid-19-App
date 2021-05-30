@@ -17,11 +17,11 @@ def app():
 
 
     class Statistics_data_DB:
-        def __init__(self, confirmed, deaths, recovered, data):
+        def __init__(self, confirmed, data, deaths, recovered):
             self.confirmed = confirmed
+            self.data = data
             self.deaths = deaths
             self.recovered = recovered
-            self.data = data
 
     firebase = firebase.FirebaseApplication("https://covid-19-535b8-default-rtdb.firebaseio.com/", None)
     st.title('Statistics')
@@ -87,24 +87,19 @@ def app():
                     else:
                         break
                 if (int(year_api) > int(year_db)) or (int(year_api) == int(year_db) and int(month_api) > int(month_db)) or (int(year_api) == int(year_db) and int(month_api) == int(month_db) and int(day_api) > int(day_db)):
-                    obj = Statistics_data_DB(str(int(response.json()[i]["Confirmed"]) - int(response.json()[i - 1]["Confirmed"])), str(int(response.json()[i]["Deaths"]) - int(response.json()[i - 1]["Deaths"])), str(int(response.json()[i]["Recovered"]) - int(response.json()[i - 1]["Recovered"])), response.json()[i]["Date"])
+                    obj = Statistics_data_DB(str(int(response.json()[i]["Confirmed"]) - int(response.json()[i - 1]["Confirmed"])), response.json()[i]["Date"], str(int(response.json()[i]["Deaths"]) - int(response.json()[i - 1]["Deaths"])), str(int(response.json()[i]["Recovered"]) - int(response.json()[i - 1]["Recovered"])))
                     if int(obj.confirmed) > 0 and int(obj.deaths) >= 0 and int(obj.recovered) >= 0:
                         json = {
                             "confirmed": obj.confirmed,
+                            "date": obj.data,
                             "deaths": obj.deaths,
                             "recovered": obj.recovered,
-                            "date": obj.data
                         }
                         print(selected_country)
                         print(year_api)
                         print(month_db)
                         print(day_api)
                         result = firebase.post(db_field, json)
-                        if result == 200:
-                            logger.info('Api dataset in %s from %s has been succesfully added in database!' %obj.data %selected_country)
-                        else:
-                            logger.warning('Dataset in %s from %s has not been added' %obj.data %selected_country)
-            logger.info("Statistics dataset for %s has been succesfully updated!" %selected_country)
             break
 
     chart_type = st.sidebar.selectbox("Select type of chart", ('Line Chart', 'Area Chart', 'Bar Chart'))
