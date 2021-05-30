@@ -35,7 +35,7 @@ def app():
     st.sidebar.title("Forecasting parameters")
 
     #printing a Covid-19 image in forecasting page
-    image = Image.open('"D:\Python_implements\Covid-19-App\covid_image.jpg"')
+    image = Image.open("D:\Python_implements\Covid-19-App\covid_image.jpg")
     st.image(image)
 
     #List of countries we select for prediction or statistics data
@@ -73,7 +73,7 @@ def app():
                 day_db += elem
             else:
                 break
-        logger.info("INFO : %s - Last dataset in Prediction DB is from %s - %s - %s", selected_country, str(year_db), str(month_db), str(day_db))
+        logger.info("INFO : %s - Prediction - Last dataset in Prediction DB is from %s - %s - %s", selected_country, str(year_db), str(month_db), str(day_db))
         break
     for country in countries_list:
         if country == selected_country:
@@ -123,9 +123,9 @@ def app():
                         print(day_api)
                         result = firebase.post(db_field, json)
                         print(json["date"])
-                        logger.info("INFO : %s - %s : Dataset has been added succesfully!", selected_country, obj.data)
+                        logger.info("INFO : %s - %s - Prediction : Dataset has been added succesfully!", selected_country, obj.data)
                     else:
-                        logger.warning("WARNING : %s - %s : Dataset has not been added because number of cases is negative or 0!", selected_country, obj.data)
+                        logger.warning("WARNING : %s - %s - Prediction : Dataset has not been added because number of cases is negative or 0!", selected_country, obj.data)
 
             break
 
