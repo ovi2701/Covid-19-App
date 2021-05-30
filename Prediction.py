@@ -11,6 +11,14 @@ def app():
     from plotly import graph_objects as go
     import pandas as pd
     from PIL import Image
+    import logging
+
+    #defining logging file, covid-19.log, in which program writes warnings, info message, errors etc
+    logger = logging.getLogger('Prediction')
+    logger.setLevel(logging.DEBUG)
+    fh = logging.FileHandler('covid-19.log')
+    fh.setLevel(logging.INFO)
+    logger.addHandler(fh)
 
     #this class is used for inserating in Firebase data
     class Forecast_data_DB:
@@ -104,7 +112,7 @@ def app():
                 #Write new data in API only if API date for each dataset row is greater than last date inserted in Database
                 if (int(year_api) > int(year_db)) or (int(year_api) == int(year_db) and int(month_api) > int(month_db)) or (int(year_api) == int(year_db) and int(month_api) == int(month_db) and int(day_api) > int(day_db)):
                     obj = Forecast_data_DB(str(int(response.json()[i]["Cases"]) - int(response.json()[i - 1]["Cases"])), response.json()[i]["Date"])
-                    if int(obj.cases) != 0:
+                    if int(obj.cases) > 0:
                         json = {
                             "cases": obj.cases,
                             "date": obj.data
@@ -115,6 +123,11 @@ def app():
                         print(day_api)
                         result = firebase.post(db_field, json)
                         print(json["date"])
+                        logger.info("%s: Data from %s succesfully added to firebase!" %selected_country %obj.data)
+                    else:
+                        logger.warning("%s: Data from %s has not been added because is negative or 0!" %selected_country %obj.data)
+                else:
+                    logger.warning("%s: Database is updated! There are no new elements to be added!" %selected_country)
             break
 
     db_name = "/covid-19-535b8-default-rtdb/"
